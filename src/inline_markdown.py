@@ -2,25 +2,25 @@ from textnode import TextNode, TextType
 import re
 
 
-def split_nodes_delimiter(old, delim, text_type):
-    new = []
-    for n in old:
-        if type(n) is not TextNode:
-            new.append(n)
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    new_nodes = []
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
             continue
-        text_list = n.text.split(delim)
-        if len(text_list) % 2 == 0:
-            raise Exception("ERROR: Invalid markdown, delimiter was not closed.")
-        nodes = []
-        for i in range(len(text_list)):
-            if text_list[i] == "":
+        split_nodes = []
+        sections = old_node.text.split(delimiter)
+        if len(sections) % 2 == 0:
+            raise ValueError("Invalid markdown, formatted section not closed")
+        for i in range(len(sections)):
+            if sections[i] == "":
                 continue
             if i % 2 == 0:
-                nodes.append(TextNode(text_list[i]))
+                split_nodes.append(TextNode(sections[i], TextType.TEXT))
             else:
-                nodes.append(TextNode(text_list[i], text_type))
-        new.extend(nodes)
-    return new
+                split_nodes.append(TextNode(sections[i], text_type))
+        new_nodes.extend(split_nodes)
+    return new_nodes
 
 
 def extract_markdown_images(text):
@@ -96,7 +96,7 @@ def split_nodes_link(old_nodes):
 
 
 def text_to_textnodes(text):
-    nodes = [TextNode(text)]
+    nodes = [TextNode(text, TextType.TEXT)]
     nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
     nodes = split_nodes_delimiter(nodes, "*", TextType.ITALIC)
     nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)

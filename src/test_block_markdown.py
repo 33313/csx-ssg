@@ -44,7 +44,7 @@ This is the same paragraph on a new line
         self.assertEqual(res_invalid, BlockType.PARAGRAPH)
 
     def test_block_type_unordered_list(self):
-        valid = "* This is a list\n- It isn't ordered\n*It works just fine."
+        valid = "- This is a list\n- It isn't ordered\n- It works just fine."
         invalid = "* This could've been a list.\nAlas, it is not.\n-A tragedy."
         res_valid = block_to_block_type(valid)
         res_invalid = block_to_block_type(invalid)

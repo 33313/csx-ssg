@@ -37,7 +37,7 @@ def is_heading(block):
 
 
 def is_code(block):
-    return re.search(r"^`{3}.*`{3}$", block) is not None
+    return block.startswith("```") and block.endswith("```")
 
 
 def is_quote(block):
@@ -51,7 +51,7 @@ def is_quote(block):
 def is_unordered_list(block):
     lines = block.split("\n")
     for line in lines:
-        if re.search(r"^(\*|\-)", line) is None:
+        if re.search(r"^(\*|\-) ", line) is None:
             return False
     return True
 

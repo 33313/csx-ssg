@@ -26,12 +26,12 @@ class TestHTMLNode(unittest.TestCase):
             node.to_html(),
             '<div><p>Testing</p><a href="https://www.google.com">Testing link</a></div>',
         )
-        
+
         node2 = ParentNode("div", [LeafNode("p", "Hi mom")], {"test": "hello"})
         leaf_list2 = [
             LeafNode("p", "Testing"),
             LeafNode("a", "Testing link", None, {"href": "https://www.google.com"}),
-            node2
+            node2,
         ]
 
         node = ParentNode("div", leaf_list2)
@@ -39,6 +39,21 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(
             node.to_html(),
             '<div><p>Testing</p><a href="https://www.google.com">Testing link</a><div test="hello"><p>Hi mom</p></div></div>',
+        )
+
+    def test_to_html_many_children(self):
+        node = ParentNode(
+            "p",
+            [
+                LeafNode("b", "Bold text"),
+                LeafNode(None, "Normal text"),
+                LeafNode("i", "italic text"),
+                LeafNode(None, "Normal text"),
+            ],
+        )
+        self.assertEqual(
+            node.to_html(),
+            "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>",
         )
 
 

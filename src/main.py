@@ -1,14 +1,16 @@
 import re
 import shutil
 import os
+import glob
 from markdown_to_html import markdown_to_html_node
 
 
 def main():
-    path = './public'
+    path = "./public"
     shutil.rmtree(path)
-    shutil.copytree('./static', './public')
-    generate_page('./content/index.md', 'template.html', './public/index.html')
+    # Yes, I used copytree. Fight me 😼
+    shutil.copytree("./static", "./public")
+    generate_pages_recursive("./content", "template.html", "./public")
 
 
 def extract_title(md):
@@ -18,21 +20,24 @@ def extract_title(md):
     return res.group().strip("# ")
 
 
-def generate_page(from_path, template_path, dest_path):
-    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
-    md_in = None
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    files = []
+    for file in glob.glob(f"{dir_path_content}/**/*.md", recursive=True):
+        files.append(file)
     template = None
-    with open(from_path, "r") as f:
-        md_in = f.read()
     with open(template_path, "r") as f:
         template = f.read()
-    content = markdown_to_html_node(md_in).to_html()
-    title = extract_title(md_in)
-    template = template.replace("{{ Title }}", title)
-    template = template.replace("{{ Content }}", content)
-    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-    with open(dest_path, "w") as f:
-        f.write(template)
+    for file in files:
+        content = None
+        with open(file, "r") as f:
+            content = f.read()
+        title = extract_title(content)
+        tmp = template.replace("{{ Title }}", title)
+        tmp = tmp.replace("{{ Content }}", markdown_to_html_node(content).to_html())
+        new_file_path = f"{dest_dir_path}/{file.removeprefix(dir_path_content)[:-3]}.html"
+        os.makedirs(os.path.dirname(new_file_path), exist_ok=True)
+        with open(new_file_path, "w") as f:
+            f.write(tmp)
 
 
 main()

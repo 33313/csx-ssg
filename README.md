@@ -26,6 +26,7 @@ It supports the standard markdown syntax, such as:
 - Add markdown files to the `/content` directory. Feel free to use folders for nesting.
 - Add any static content such as stylesheets, images or videos to the `/static` folder. You may reference these in your markdown files.
 - Once you're done, run the `main.sh` script.
+- All done! Your generated site should be in the `/public` directory.
 
 
 ## ⚠ Warning

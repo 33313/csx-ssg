@@ -2,7 +2,7 @@ import re
 from block_markdown import BlockType, block_to_block_type, markdown_to_blocks
 from htmlnode import ParentNode
 from inline_markdown import text_to_textnodes
-from textnode import TextType, text_node_to_html_node
+from textnode import text_node_to_html_node
 
 
 def markdown_to_html_node(md):
